@@ -7,13 +7,18 @@ const { protectToken } = require('../middlewares/usersMiddlewares');
 const {
     createMeals,
     getAllMeals,
-  getMealstById,
+  getMealById,
   updateMealsById,
   deleteMeals,
 } = require('../controllers/mealsController');
 
 const router = express.Router();
 router.use(protectToken);
+router.post(
+  '/:restaurantId',
+  createMeals
+);
+
 
 router.route('/').get(getAllMeals)
 
@@ -22,8 +27,7 @@ router.route('/').get(getAllMeals)
 router
   .use('/:id', mealsExists)
   .route('/:id')
-  .post(createMeals)
-  .get(getMealstById)
+  .get(getMealById)
   .patch(updateMealsById)
   .delete(deleteMeals);
 

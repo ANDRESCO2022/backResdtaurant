@@ -4,14 +4,18 @@ const express = require('express');
 const {
   userExists,
   protectToken,
+  protectAdmin,
   protectAccountOwner,
 } = require('../middlewares/usersMiddlewares');
+const {
+  createUserValidations,
+  checkValidations,
+} = require('../middlewares/validationsMiddlewares');
 
 // Controller
 const {
   getAllUsers,
   createUser,
- // getUserById,
   updateUser,
   deleteUser,
   GetAllOrdersById,

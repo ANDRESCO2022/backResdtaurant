@@ -6,7 +6,7 @@ const { Restaurant } = require('./restaurantsModels')
 const { Meal} = require('./mealsModels')
 const initModels = () => {
   //user to  orders ___________
-  User.hasMany(Order);
+  User.hasOne(Order);
   Order.belongsTo(User);
   //meals to  orders ___________
   Order.hasOne(Meal)

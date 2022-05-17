@@ -8,22 +8,24 @@ const {restaurantExists}= require('../middlewares/restaurantsMiddlewares')
 
 // // Controller
  const {
-   getAllRestaurant,
+   getAllActiveRestaurants,
    createRestaurant,
    getRestaurantById,
    updateRestaurant,
    deleteRestaurant,
-   createReviewsById,
+   createReviewsByRestaurantId,
    updateReviewByRestaurantId,
-   desableReviewByRestaurantId
- 
+   desableReviewByRestaurantId,
  } = require('../controllers/restaurantsController');
 
 
 const router = express.Router();
 router.use(protectToken);
 
-router.route('/').get(getAllRestaurant).post(createRestaurant);
+router  
+  .route('/')
+  .post(createRestaurant)
+  .get(getAllActiveRestaurants)
 
 router
 .use('/:id', restaurantExists)
@@ -31,7 +33,7 @@ router
 .get(getRestaurantById)
 .patch(updateRestaurant)
 .delete(deleteRestaurant);
-router.post('/reviews/:id',createReviewsById);
+router.post('/reviews/:id',createReviewsByRestaurantId);
 router
 .use('/reviews/restauranId/:id',restaurantExists )
 .patch(updateReviewByRestaurantId)
