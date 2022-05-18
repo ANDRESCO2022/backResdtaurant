@@ -49,6 +49,16 @@ const createRestaurantValidations = [
   .notEmpty()
   .withMessage('Address cannot be empty'),
 ];
+const loginUsersValidations = [
+  body('email')
+    .notEmpty()
+    .withMessage('Invalid credential')
+    .isEmail()
+    .withMessage('Invalid credencial'),
+  body('password')
+  .notEmpty()
+  .withMessage('Password cannot be empty'),
+];
 const checkValidations = (req, res, next) => {
   const errors = validationResult(req);
 
@@ -71,4 +81,5 @@ module.exports = {
   createReviewsValidations,
   createRestaurantValidations,
   createMealsValidations,
+  loginUsersValidations,
 };

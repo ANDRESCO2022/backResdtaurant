@@ -26,11 +26,8 @@ router.route('/',mealExists)
   createOrdersValidations, 
   createOrder);
 
+router.patch('/:id', orderExists,  updateOrder);
+router.delete('/:id',orderExists,deleteOrder)
 router.get('/me', getMyOrder)
-router.patch('/:id',protectAccountOwner, updateOrder)
-
-
-
-router.delete('/:id',protectAccountOwner, deleteOrder)
   
 module.exports = { orderRouter: router };

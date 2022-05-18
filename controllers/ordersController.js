@@ -1,12 +1,11 @@
 // Models
 const { Meal } = require('../models/mealsModels');
 const { User } = require('../models/usersModels');
- const { Order } = require('../models/ordersModels');
- const { Restaurant } = require('../models/restaurantsModels');
+const { Order } = require('../models/ordersModels');
+const { Restaurant } = require('../models/restaurantsModels');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync');
-
 
 const createOrder = catchAsync(async (req, res, next) => {
   const { quantity, mealId } = req.body;
@@ -28,10 +27,9 @@ const createOrder = catchAsync(async (req, res, next) => {
   res.status(201).json({ newOrder });
 });
 
-
 const updateOrder = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const order = await Order.findOne({ where: { id, status: 'active' } });
+  const order = await Order.findOne({ where: { id } });
 
   await order.update({ status: 'completed' });
 
@@ -41,16 +39,14 @@ const updateOrder = catchAsync(async (req, res, next) => {
 const deleteOrder = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const order = await Order.findOne({ where: { id, status: 'active' } });
+  const order = await Order.findOne({ where: { id } });
 
-  await order.update({ status: 'deleted' });
+  await order.update({ status: 'canceled' });
 
   res.status(200).json({
     status: 'success',
   });
 });
-
-;
 
 const getMyOrder = catchAsync(async (req, res, next) => {
   const { sessionUser } = req;
@@ -70,8 +66,8 @@ const getMyOrder = catchAsync(async (req, res, next) => {
 });
 
 module.exports = {
-createOrder,
- getMyOrder,
- updateOrder,
- deleteOrder,
-}
+  createOrder,
+  getMyOrder,
+  updateOrder,
+  deleteOrder,
+};

@@ -65,19 +65,14 @@ const userExists = catchAsync(async (req, res, next) => {
   next();
 });
 
-const protectAccountOwner = catchAsync(async (req, res, next) => {
-  // Get current session user and the user that is going to be updated
-  const { sessionUser, user } = req;
-
-  // Compare the id's
-  if (sessionUser.id !== user.id) {
-    // If the ids aren't equal, return error
+const protectAccountOwner = catchAsync(async (req, res, next) => {  
+  const { sessionUser, user } = req;  
+  if (sessionUser.id !== user.id) { 
     return next(new AppError('You do not own this account', 403));
   }
-
-  // If the ids are equal, the request pass
   next();
 });
+
 
 module.exports = {
   userExists,

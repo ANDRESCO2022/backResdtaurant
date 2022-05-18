@@ -1,10 +1,18 @@
 const { Restaurant } = require('../models/restaurantsModels');
 const { Review } = require('../models/reviewsModels');
+const { User } = require('../models/usersModels');
 const { catchAsync } = require('../utils/catchAsync');
 
 const getAllActiveRestaurants = catchAsync(async (req, res, next) => {
   const restaurants = await Restaurant.findAll({
     where: { status: 'active' },
+    include: [
+      {
+        model: Review,
+        attributes: ['comment', 'rating'],
+        include: [{ model: User }],
+      },
+    ],
   });
 
   res.status(200).json({
@@ -62,22 +70,26 @@ const createReviewsByRestaurantId = catchAsync(async (req, res, next) => {
 });
 const updateReviewByRestaurantId =  catchAsync(async (req, res, next) => {
   const { comment, rating} = req.body;
-  const { restaurantId } = req.params;
-    const { sessionUser } = req;
+  const { reviewId} = req.params;
+    
 
-const review = await Review.findOne({ where: { restaurantId } });
-
-  console.log(review);
-
+const review = await Review.findOne({ where: { id:reviewId} });
   await review.update({ 
     comment, 
     rating,
-     userId: sessionUser.id,
+   
   });
 
   res.status(200).json({ status: 'success' });
 });
 const desableReviewByRestaurantId = catchAsync(async (req, res, next) => {
+   const { comment, rating } = req.body;
+   const { reviewId } = req.params;
+
+   const review = await Review.findOne({ where: { id: reviewId } });
+   await review.update({
+     status: 'deleted'
+   });
   res.status(200).json({
     status: 'success',
   });

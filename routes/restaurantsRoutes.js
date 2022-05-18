@@ -3,6 +3,7 @@ const express = require('express');
 // Middlewares
 
 const {restaurantExists}= require('../middlewares/restaurantsMiddlewares')
+const {reviewExists}= require('../middlewares/reviewsMiddlewares')
 
 
 
@@ -42,11 +43,8 @@ router
     checkValidations,
     createReviewsByRestaurantId
   );
-  router
-    .use('/reviews/:restauranId',   
-     restaurantExists)
-    .patch(updateReviewByRestaurantId)
-    .delete(desableReviewByRestaurantId);
+  router.patch('/reviews/:reviewId', updateReviewByRestaurantId)
+    router.delete('/reviews/:reviewId', desableReviewByRestaurantId);
 router
   .use('/:id', restaurantExists)
   .route('/:id')
