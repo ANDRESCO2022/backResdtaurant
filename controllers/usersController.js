@@ -7,6 +7,8 @@ const dotenv = require('dotenv');
 // Models
 const { User } = require('../models/usersModels');
 const { Order } = require('../models/ordersModels');
+const { Meal } = require('../models/mealsModels');
+const { Restaurant } = require('../models/restaurantsModels');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync');
@@ -97,15 +99,45 @@ const login = catchAsync(async (req, res, next) => {
   res.status(200).json({ token, user });
 });
 const GetAllOrdersByUser = catchAsync(async (req, res, next) => {
+const { sessionUser } = req;
+const orders = await Order.findAll({
   
-  res.status(200).json();
+  where: { userId: sessionUser.id, status: 'active' },
+  include: [
+    
+    {
+      model: Meal,
+      attributes: ['name', 'price'],
+      include: [{ model: Restaurant, attributes: ['name'] }],
+    },
+  ],
+});
+    
+  res.status(200).json({ orders });
 });
 const GetAllOrdersById = catchAsync(async (req, res, next) => {
-  res.status(200).json();
+  const { id } = req.params;
+
+  const order = await Order.findOne({
+    where: { id },
+    include: [
+      {
+        model: Meal,
+        attributes: ['name','price'],
+        include: [{ model: Restaurant, attributes: ['name'] }],
+      },
+    ],
+  });
+
+  res.status(200).json({
+    order,
+  });
 });
+
 const checkToken = catchAsync(async (req, res, next) => {
   res.status(200).json({ user: req.sessionUser });
 });
+
 
 module.exports = {
   getAllUsers,

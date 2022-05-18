@@ -1,12 +1,11 @@
-
 const { Restaurant } = require('../models/restaurantsModels');
 const { Review } = require('../models/reviewsModels');
 const { catchAsync } = require('../utils/catchAsync');
 
 const getAllActiveRestaurants = catchAsync(async (req, res, next) => {
   const restaurants = await Restaurant.findAll({
-     where: { status: 'active' }
-     });
+    where: { status: 'active' },
+  });
 
   res.status(200).json({
     restaurants,
@@ -14,13 +13,11 @@ const getAllActiveRestaurants = catchAsync(async (req, res, next) => {
 });
 const createRestaurant = catchAsync(async (req, res, next) => {
   const { name, address, rating } = req.body;
-   
-   
+
   const newRestaurant = await Restaurant.create({
     name,
     address,
     rating,
-  
   });
 
   res.status(201).json({ newRestaurant });
@@ -63,19 +60,28 @@ const createReviewsByRestaurantId = catchAsync(async (req, res, next) => {
   });
   res.status(200).json({ newReview });
 });
- const updateReviewByRestaurantId= catchAsync(async (req, res, next) => {
+const updateReviewByRestaurantId =  catchAsync(async (req, res, next) => {
+  const { comment, rating} = req.body;
+  const { restaurantId } = req.params;
+    const { sessionUser } = req;
 
+const review = await Review.findOne({ where: { restaurantId } });
 
-  res.status(200).json({
-    status: 'success',
+  console.log(review);
+
+  await review.update({ 
+    comment, 
+    rating,
+     userId: sessionUser.id,
   });
-}); 
+
+  res.status(200).json({ status: 'success' });
+});
 const desableReviewByRestaurantId = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
   });
 });
-
 
 module.exports = {
   getAllActiveRestaurants,

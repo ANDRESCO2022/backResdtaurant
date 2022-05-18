@@ -4,7 +4,6 @@ const express = require('express');
 const {
   userExists,
   protectToken,
-  protectAdmin,
   protectAccountOwner,
 } = require('../middlewares/usersMiddlewares');
 const {
@@ -26,17 +25,17 @@ const {
 
 const router = express.Router();
 
-router.post('/signup', createUser);
+router.post('/signup', checkValidations,createUserValidations , createUser);
 
 router.post('/login', login);
 
-// Apply protectToken middleware
+
 router.use(protectToken);
 
 router.get('/', getAllUsers);
 
 router.get('/check-token', checkToken);
-router.get('/orders',GetAllOrdersByUser);
+router.get('/orders', GetAllOrdersByUser);
 router.get('/orders/:id', GetAllOrdersById)
 router
   .route('/:id')
@@ -44,3 +43,4 @@ router
   .delete(userExists, protectAccountOwner, deleteUser);
 
 module.exports = { usersRouter: router };
+

@@ -4,8 +4,15 @@ const express = require('express');
 
 const {restaurantExists}= require('../middlewares/restaurantsMiddlewares')
 
- const { protectToken } = require('../middlewares/usersMiddlewares');
 
+
+ const { protectToken,protectAdmin } = require('../middlewares/usersMiddlewares');
+
+ const {
+   createRestaurantValidations,
+   createReviewsValidations,
+   checkValidations,
+ } = require('../middlewares/validationsMiddlewares');
 // // Controller
  const {
    getAllActiveRestaurants,
@@ -24,20 +31,28 @@ router.use(protectToken);
 
 router  
   .route('/')
-  .post(createRestaurant)
+  .post( checkValidations,
+    createRestaurantValidations,
+    createRestaurant)
   .get(getAllActiveRestaurants)
-
+  
+  router.post(
+    '/reviews/:restaurantId',
+    createReviewsValidations,
+    checkValidations,
+    createReviewsByRestaurantId
+  );
+  router
+    .use('/reviews/:restauranId',   
+     restaurantExists)
+    .patch(updateReviewByRestaurantId)
+    .delete(desableReviewByRestaurantId);
 router
-.use('/:id', restaurantExists)
-.route('/:id')
-.get(getRestaurantById)
-.patch(updateRestaurant)
-.delete(deleteRestaurant);
-router.post('/reviews/:id',createReviewsByRestaurantId);
-router
-.use('/reviews/restauranId/:id',restaurantExists )
-.patch(updateReviewByRestaurantId)
-.delete(desableReviewByRestaurantId);
+  .use('/:id', restaurantExists)
+  .route('/:id')
+  .get(getRestaurantById)
+  .patch( protectAdmin,updateRestaurant)
+  .delete(protectAdmin, deleteRestaurant);
 
 
 module.exports = { restaurantRouter: router };
